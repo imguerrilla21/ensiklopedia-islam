@@ -18,12 +18,18 @@ const KUTUBUS_SITTAH_IDS = new Set([
 ])
 
 export async function getKitabListFromDb(): Promise<KitabItem[]> {
+  if (!db) {
+    return fallbackKitabList.filter((item) => !KUTUBUS_SITTAH_IDS.has(item.id))
+  }
+
   try {
     const rows = await db.select().from(kitab).orderBy(kitab.judul)
     // Exclude Kutubus Sittah from general Kitab list because they belong to the Hadis section
-    const nonKutubRows = rows.filter((r) => !KUTUBUS_SITTAH_IDS.has(r.id))
+    const nonKutubRows = rows.filter((r: any) => !KUTUBUS_SITTAH_IDS.has(r.id))
 
-    if (nonKutubRows.length === 0) return fallbackKitabList
+    if (nonKutubRows.length === 0) {
+      return fallbackKitabList.filter((item) => !KUTUBUS_SITTAH_IDS.has(item.id))
+    }
 
     const babCounts = await db
       .select({
@@ -42,7 +48,7 @@ export async function getKitabListFromDb(): Promise<KitabItem[]> {
       babByKitab.set(b.kitabId, list)
     }
 
-    const dbItems: KitabItem[] = nonKutubRows.map((k) => {
+    const dbItems: KitabItem[] = nonKutubRows.map((k: any) => {
       const fallback = fallbackKitabList.find((fb) => fb.id === k.id)
       const bList = babByKitab.get(k.id) ?? []
       return {
@@ -64,7 +70,7 @@ export async function getKitabListFromDb(): Promise<KitabItem[]> {
 
     return dbItems.filter((item) => !KUTUBUS_SITTAH_IDS.has(item.id))
   } catch {
-    return fallbackKitabList
+    return fallbackKitabList.filter((item) => !KUTUBUS_SITTAH_IDS.has(item.id))
   }
 }
 
@@ -72,14 +78,16 @@ export async function getKitabDetailFromDb(
   id: string,
 ): Promise<KitabItem | null> {
   const fallback = allKitabRegistry.find((k) => k.id === id)
-  if (KUTUBUS_SITTAH_IDS.has(id) && fallback) {
+  if (fallback) {
     return fallback
   }
+
+  if (!db) return null
 
   try {
     const rows = await db.select().from(kitab).where(eq(kitab.id, id))
     if (rows.length === 0) {
-      return fallback ?? null
+      return null
     }
 
     const bRows = await db
@@ -88,116 +96,106 @@ export async function getKitabDetailFromDb(
       .where(eq(kitabBab.kitabId, id))
       .orderBy(kitabBab.nomor)
 
-    if (fallback && fallback.bab.length > bRows.length) {
-      return fallback
-    }
-
     return {
       id: rows[0].id,
       ulama: rows[0].ulama,
       kategori: rows[0].kategori,
       judul: rows[0].judul,
       deskripsi: rows[0].deskripsi,
-      bab: bRows.map((b) => ({
+      bab: bRows.map((b: any) => ({
         nomor: b.nomor,
         judul: b.judul,
         teks: b.teks,
       })),
     }
   } catch {
-    return fallback ?? null
+    return null
   }
 }
 
 export async function getUlamaListFromDb(): Promise<string[]> {
+  if (!db) {
+    return Array.from(new Set(fallbackKitabList.map((k) => k.ulama))).sort()
+  }
   try {
     const rows = await db.selectDistinct({ ulama: kitab.ulama }).from(kitab)
-    return rows.map((r) => r.ulama).filter(Boolean).sort()
+    const list = rows.map((r: any) => r.ulama).filter(Boolean).sort()
+    return list.length > 0
+      ? list
+      : Array.from(new Set(fallbackKitabList.map((k) => k.ulama))).sort()
   } catch {
     return Array.from(new Set(fallbackKitabList.map((k) => k.ulama))).sort()
   }
 }
 
 export async function getKategoriListFromDb(): Promise<string[]> {
+  if (!db) {
+    return Array.from(new Set(fallbackKitabList.map((k) => k.kategori))).sort()
+  }
   try {
     const rows = await db
       .selectDistinct({ kategori: kitab.kategori })
       .from(kitab)
-    return rows.map((r) => r.kategori).filter(Boolean).sort()
+    const list = rows.map((r: any) => r.kategori).filter(Boolean).sort()
+    return list.length > 0
+      ? list
+      : Array.from(new Set(fallbackKitabList.map((k) => k.kategori))).sort()
   } catch {
     return Array.from(new Set(fallbackKitabList.map((k) => k.kategori))).sort()
   }
 }
 
 export async function syncKitabList(): Promise<boolean> {
+  if (!db) return false
   const list = await fetchKitabList()
   if (!list) return false
-  for (const k of list) {
-    await db
-      .insert(kitab)
-      .values({
-        id: k.slug,
-        ulama: k.pengarang,
-        kategori: k.kategori,
-        judul: k.nama,
-        deskripsi: k.deskripsi,
-      })
-      .onConflictDoUpdate({
-        target: kitab.id,
-        set: {
-          ulama: k.pengarang,
-          kategori: k.kategori,
+
+  try {
+    for (const k of list) {
+      await db
+        .insert(kitab)
+        .values({
+          id: k.slug,
+          ulama: k.pengarang ?? "",
+          kategori: k.kategori ?? "Umum",
           judul: k.nama,
-          deskripsi: k.deskripsi,
-        },
-      })
+          deskripsi: k.deskripsi ?? "",
+        })
+        .onConflictDoUpdate({
+          target: kitab.id,
+          set: {
+            ulama: k.pengarang ?? "",
+            kategori: k.kategori ?? "Umum",
+            judul: k.nama,
+            deskripsi: k.deskripsi ?? "",
+          },
+        })
+    }
+    return true
+  } catch {
+    return false
   }
-  return true
 }
 
-export async function syncKitabDetail(
-  slug: string,
-  targetId: string = slug,
-): Promise<boolean> {
-  const det = await fetchKitabDetail(slug)
-  if (!det) return false
-  const k = det.kitab
-  await db
-    .insert(kitab)
-    .values({
-      id: targetId,
-      ulama: k.pengarang,
-      kategori: k.kategori,
-      judul: k.nama,
-      deskripsi: k.deskripsi,
-    })
-    .onConflictDoUpdate({
-      target: kitab.id,
-      set: {
-        ulama: k.pengarang,
-        kategori: k.kategori,
-        judul: k.nama,
-        deskripsi: k.deskripsi,
-      },
-    })
-  for (const b of det.bab) {
-    await db
-      .insert(kitabBab)
-      .values({
-        id: `${targetId}-${b.nomor}`,
-        kitabId: targetId,
+export async function syncKitabDetail(id: string): Promise<boolean> {
+  if (!db) return false
+  const detail = await fetchKitabDetail(id)
+  if (!detail) return false
+
+  try {
+    await db.delete(kitabBab).where(eq(kitabBab.kitabId, id))
+
+    for (const b of detail.bab) {
+      await db.insert(kitabBab).values({
+        id: crypto.randomUUID(),
+        kitabId: id,
         nomor: b.nomor,
         judul: b.judul,
         teks: b.keterangan ?? "",
       })
-      .onConflictDoUpdate({
-        target: kitabBab.id,
-        set: {
-          judul: b.judul,
-          teks: b.keterangan ?? "",
-        },
-      })
+    }
+    return true
+  } catch {
+    return false
   }
-  return true
 }
-

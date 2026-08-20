@@ -256,7 +256,7 @@ export async function getSurahDetailFromDb(
       .where(eq(tafsir.surahId, resolvedSlug))
 
     if (surahRow.length > 0 && ayatRows.length > 0) {
-      const tafsirByNomor = new Map(tafsirRows.map((t) => [t.ayatNomor, t.teks]))
+      const tafsirByNomor = new Map(tafsirRows.map((t: any) => [t.ayatNomor, t.teks]))
       return {
         nomor: surahRow[0].nomor,
         id: surahRow[0].id,
@@ -264,7 +264,7 @@ export async function getSurahDetailFromDb(
         namaLatin: surahRow[0].namaLatin,
         arti: surahRow[0].arti,
         jumlahAyat: surahRow[0].jumlahAyat,
-        ayat: ayatRows.map((a) => ({
+        ayat: ayatRows.map((a: any) => ({
           nomor: a.nomor,
           arab: a.arab,
           terjemah: a.terjemah,

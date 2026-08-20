@@ -18,45 +18,52 @@ function toBab(rows: typeof kitabBab.$inferSelect[]) {
 export async function GET(_req: Request, { params }: PageProps) {
   const { id } = await params
 
-  const rows = await db.select().from(kitab).where(eq(kitab.id, id))
-  if (rows.length > 0) {
-    let babRows = await db
-      .select()
-      .from(kitabBab)
-      .where(eq(kitabBab.kitabId, id))
-      .orderBy(kitabBab.nomor)
-    if (babRows.length === 0 && isApiConfigured()) {
-      await syncKitabDetail(id)
-      babRows = await db
-        .select()
-        .from(kitabBab)
-        .where(eq(kitabBab.kitabId, id))
-        .orderBy(kitabBab.nomor)
-    }
-    return Response.json({ kitab: { ...rows[0], bab: toBab(babRows) } })
+  const mock = getKitab(id)
+  if (mock) {
+    return Response.json({ kitab: mock })
   }
 
-  if (isApiConfigured()) {
-    const synced = await syncKitabDetail(id)
-    if (synced) {
-      const fresh = await db.select().from(kitab).where(eq(kitab.id, id))
-      if (fresh.length > 0) {
-        const babRows = await db
+  if (db) {
+    try {
+      const rows = await db.select().from(kitab).where(eq(kitab.id, id))
+      if (rows.length > 0) {
+        let babRows = await db
           .select()
           .from(kitabBab)
           .where(eq(kitabBab.kitabId, id))
           .orderBy(kitabBab.nomor)
-        return Response.json({
-          kitab: { ...fresh[0], bab: toBab(babRows) },
-          fromApi: true,
-        })
+        if (babRows.length === 0 && isApiConfigured()) {
+          await syncKitabDetail(id)
+          babRows = await db
+            .select()
+            .from(kitabBab)
+            .where(eq(kitabBab.kitabId, id))
+            .orderBy(kitabBab.nomor)
+        }
+        return Response.json({ kitab: { ...rows[0], bab: toBab(babRows) } })
       }
+
+      if (isApiConfigured()) {
+        const synced = await syncKitabDetail(id)
+        if (synced) {
+          const fresh = await db.select().from(kitab).where(eq(kitab.id, id))
+          if (fresh.length > 0) {
+            const babRows = await db
+              .select()
+              .from(kitabBab)
+              .where(eq(kitabBab.kitabId, id))
+              .orderBy(kitabBab.nomor)
+            return Response.json({
+              kitab: { ...fresh[0], bab: toBab(babRows) },
+              fromApi: true,
+            })
+          }
+        }
+      }
+    } catch {
+      // Fallback
     }
   }
 
-  const mock = getKitab(id)
-  if (!mock) {
-    return Response.json({ error: "Kitab tidak ditemukan" }, { status: 404 })
-  }
-  return Response.json({ kitab: mock })
+  return Response.json({ error: "Kitab tidak ditemukan" }, { status: 404 })
 }

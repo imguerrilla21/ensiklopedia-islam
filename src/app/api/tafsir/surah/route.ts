@@ -10,7 +10,7 @@ export async function GET() {
     if (rows.length > 0) {
       return Response.json({
         count: rows.length,
-        surah: rows.map((r) => ({
+        surah: rows.map((r: any) => ({
           nomor: r.nomor,
           id: r.id,
           nama: r.nama,

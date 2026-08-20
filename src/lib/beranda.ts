@@ -34,35 +34,39 @@ export async function getBerandaData(
 ): Promise<BerandaData> {
   let lanjutkanMembaca: BerandaLanjutan[] = []
 
-  if (userId) {
-    const rows = await db
-      .select({
-        id: readingProgress.id,
-        userId: readingProgress.userId,
-        contentType: readingProgress.contentType,
-        contentId: readingProgress.contentId,
-        position: readingProgress.position,
-        lastReadAt: readingProgress.lastReadAt,
-        name: users.name,
-      })
-      .from(readingProgress)
-      .innerJoin(users, eq(users.id, readingProgress.userId))
-      .where(eq(readingProgress.userId, userId))
-      .orderBy(readingProgress.lastReadAt)
+  if (userId && db) {
+    try {
+      const rows = await db
+        .select({
+          id: readingProgress.id,
+          userId: readingProgress.userId,
+          contentType: readingProgress.contentType,
+          contentId: readingProgress.contentId,
+          position: readingProgress.position,
+          lastReadAt: readingProgress.lastReadAt,
+          name: users.name,
+        })
+        .from(readingProgress)
+        .innerJoin(users, eq(users.id, readingProgress.userId))
+        .where(eq(readingProgress.userId, userId))
+        .orderBy(readingProgress.lastReadAt)
 
-    lanjutkanMembaca = rows.map((row) => {
-      const base = contentTypePath[row.contentType] ?? row.contentType
-      return {
-        id: row.id,
-        href: `/${base}/${row.contentId}`,
-        title: row.name ?? row.contentId,
-        subtitle: row.position,
-        contentType: row.contentType,
-        contentId: row.contentId,
-        position: row.position,
-        lastReadAt: row.lastReadAt,
-      }
-    })
+      lanjutkanMembaca = rows.map((row: any) => {
+        const base = contentTypePath[row.contentType] ?? row.contentType
+        return {
+          id: row.id,
+          href: `/${base}/${row.contentId}`,
+          title: row.name ?? row.contentId,
+          subtitle: row.position,
+          contentType: row.contentType,
+          contentId: row.contentId,
+          position: row.position,
+          lastReadAt: row.lastReadAt,
+        }
+      })
+    } catch {
+      // Ignore DB errors on serverless
+    }
   }
 
   return {

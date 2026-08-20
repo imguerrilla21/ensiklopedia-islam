@@ -57,7 +57,7 @@ async function main() {
       // hapus sisa baris orphan (slug asli) dari run gagal sebelumnya
       await db.delete(kitabBab).where(eq(kitabBab.kitabId, realSlug))
       await db.delete(kitab).where(eq(kitab.id, realSlug))
-      const ok = await syncKitabDetail(realSlug, k.id)
+      const ok = await syncKitabDetail(realSlug)
       console.log(`  kitab ${k.id} (${realSlug}): ${ok ? "ok" : "gagal"}`)
     } catch (err) {
       console.log(`  kitab ${k.id} (${realSlug}): ERROR ${String(err)}`)

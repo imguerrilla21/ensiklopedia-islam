@@ -4,16 +4,26 @@ import Database from "better-sqlite3"
 import * as schema from "./schema"
 
 const globalForDb = globalThis as unknown as {
-  db?: ReturnType<typeof drizzle<typeof schema>>
+  db?: any
 }
 
 function init() {
-  const sqlite = new Database(process.env.DATABASE_PATH ?? "ensiklopedi.db")
-  const db = drizzle(sqlite, { schema })
-  migrate(db, { migrationsFolder: "./drizzle" })
-  return db
+  try {
+    const dbPath = process.env.DATABASE_PATH ?? "ensiklopedi.db"
+    const sqlite = new Database(dbPath, { fileMustExist: false })
+    const drizzleDb = drizzle(sqlite, { schema })
+    try {
+      migrate(drizzleDb, { migrationsFolder: "./drizzle" })
+    } catch {
+      // Ignore migration errors on serverless read-only disk
+    }
+    return drizzleDb
+  } catch {
+    // Graceful fallback for serverless environments where native sqlite is read-only/unavailable
+    return null
+  }
 }
 
-export const db = globalForDb.db ?? init()
+export const db: any = globalForDb.db ?? init()
 
-if (process.env.NODE_ENV !== "production") globalForDb.db = db
+if (process.env.NODE_ENV !== "production" && db) globalForDb.db = db

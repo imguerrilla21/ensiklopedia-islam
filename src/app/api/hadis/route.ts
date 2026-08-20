@@ -29,45 +29,54 @@ export async function GET(req: Request) {
   const filterPerawi = perawiQ && perawiQ !== "all" ? perawiQ : null
   const filterTema = temaQ && temaQ !== "all" ? temaQ : null
 
-  const rows = await db.select().from(hadis).orderBy(hadis.perawi, hadis.id)
+  if (db) {
+    try {
+      const rows = await db.select().from(hadis).orderBy(hadis.perawi, hadis.id)
+      if (rows.length > 0) {
+        const conditions = []
+        if (filterPerawi) conditions.push(eq(hadis.perawi, filterPerawi))
+        if (filterTema) conditions.push(eq(hadis.tema, filterTema))
+        const filtered =
+          conditions.length > 0
+            ? await db
+                .select()
+                .from(hadis)
+                .where(and(...conditions))
+                .orderBy(hadis.perawi, hadis.id)
+            : rows
+        const perawiOptions = (
+          await db.selectDistinct({ v: hadis.perawi }).from(hadis)
+        )
+          .map((r: any) => r.v)
+          .filter(Boolean)
+        const temaOptions = (
+          await db.selectDistinct({ v: hadis.tema }).from(hadis)
+        )
+          .map((r: any) => r.v)
+          .filter(Boolean)
 
-  let data: HadisItem[]
-  let perawiOptions: string[]
-  let temaOptions: string[]
-
-  if (rows.length === 0) {
-    data = hadisList.filter(
-      (h) =>
-        (!filterPerawi || h.perawi === filterPerawi) &&
-        (!filterTema || h.tema === filterTema),
-    )
-    perawiOptions = getPerawiList()
-    temaOptions = getTemaList()
-  } else {
-    const conditions = []
-    if (filterPerawi) conditions.push(eq(hadis.perawi, filterPerawi))
-    if (filterTema) conditions.push(eq(hadis.tema, filterTema))
-    const filtered =
-      conditions.length > 0
-        ? await db
-            .select()
-            .from(hadis)
-            .where(and(...conditions))
-            .orderBy(hadis.perawi, hadis.id)
-        : rows
-    data = filtered.map(toItem)
-    perawiOptions = (await db.selectDistinct({ v: hadis.perawi }).from(hadis))
-      .map((r) => r.v)
-      .sort()
-    temaOptions = (await db.selectDistinct({ v: hadis.tema }).from(hadis))
-      .map((r) => r.v ?? "")
-      .sort()
+        return Response.json({
+          count: filtered.length,
+          hadis: filtered.map(toItem),
+          perawi: perawiOptions,
+          tema: temaOptions,
+        })
+      }
+    } catch {
+      // Fallback to in-memory
+    }
   }
+
+  const data = hadisList.filter(
+    (h) =>
+      (!filterPerawi || h.perawi === filterPerawi) &&
+      (!filterTema || h.tema === filterTema),
+  )
 
   return Response.json({
     count: data.length,
     hadis: data,
-    perawi: perawiOptions,
-    tema: temaOptions,
+    perawi: getPerawiList(),
+    tema: getTemaList(),
   })
 }

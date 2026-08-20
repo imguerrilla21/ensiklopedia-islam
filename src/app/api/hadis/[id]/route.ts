@@ -10,21 +10,27 @@ type PageProps = { params: Promise<{ id: string }> }
 export async function GET(_req: Request, { params }: PageProps) {
   const { id } = await params
 
-  const rows = await db.select().from(hadis).where(eq(hadis.id, id))
-  if (rows.length > 0) {
-    return Response.json({ hadis: rows[0] })
-  }
-
-  if (isApiConfigured()) {
-    const synced = await syncHadis(id)
-    if (synced) {
-      const fresh = await db
-        .select()
-        .from(hadis)
-        .where(eq(hadis.id, id))
-      if (fresh.length > 0) {
-        return Response.json({ hadis: fresh[0], fromApi: true })
+  if (db) {
+    try {
+      const rows = await db.select().from(hadis).where(eq(hadis.id, id))
+      if (rows.length > 0) {
+        return Response.json({ hadis: rows[0] })
       }
+
+      if (isApiConfigured()) {
+        const synced = await syncHadis(id)
+        if (synced) {
+          const fresh = await db
+            .select()
+            .from(hadis)
+            .where(eq(hadis.id, id))
+          if (fresh.length > 0) {
+            return Response.json({ hadis: fresh[0], fromApi: true })
+          }
+        }
+      }
+    } catch {
+      // Fallback to in-memory
     }
   }
 
