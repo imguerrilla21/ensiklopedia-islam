@@ -2,7 +2,7 @@ export type MenuLink = {
   href: string
   title: string
   description: string
-  icon: "quran" | "hadis" | "kitab" | "search" | "ai" | "riwayat"
+  icon: "quran" | "hadis" | "kitab" | "search" | "ai" | "riwayat" | "info"
 }
 
 export const menuUtama: MenuLink[] = [
@@ -35,6 +35,12 @@ export const menuUtama: MenuLink[] = [
     title: "Riwayat",
     description: "Catatan bacaan tafsir, hadis, kitab, dan konsultasi AI yang Anda simpan.",
     icon: "riwayat",
+  },
+  {
+    href: "/tentang",
+    title: "Tentang",
+    description: "Tentang Hadits.id, rujukan sunnah.com, dan panduan instalasi aplikasi.",
+    icon: "info",
   },
 ]
 
