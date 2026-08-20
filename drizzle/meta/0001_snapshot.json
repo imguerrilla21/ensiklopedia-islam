@@ -1,0 +1,375 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "b2aa6598-fc8d-4ad2-95ce-731696d41c2a",
+  "prevId": "79dbbec7-1cf1-485e-b951-4597cd8e632e",
+  "tables": {
+    "ayat": {
+      "name": "ayat",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "surahId": {
+          "name": "surahId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nomor": {
+          "name": "nomor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "arab": {
+          "name": "arab",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "terjemah": {
+          "name": "terjemah",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "juz": {
+          "name": "juz",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "ayat_surah_idx": {
+          "name": "ayat_surah_idx",
+          "columns": [
+            "surahId"
+          ],
+          "isUnique": false
+        },
+        "ayat_surah_nomor_idx": {
+          "name": "ayat_surah_nomor_idx",
+          "columns": [
+            "surahId",
+            "nomor"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "ayat_surahId_surah_id_fk": {
+          "name": "ayat_surahId_surah_id_fk",
+          "tableFrom": "ayat",
+          "tableTo": "surah",
+          "columnsFrom": [
+            "surahId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "reading_progress": {
+      "name": "reading_progress",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "contentType": {
+          "name": "contentType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "contentId": {
+          "name": "contentId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "position": {
+          "name": "position",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lastReadAt": {
+          "name": "lastReadAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "reading_progress_user_idx": {
+          "name": "reading_progress_user_idx",
+          "columns": [
+            "userId"
+          ],
+          "isUnique": false
+        },
+        "reading_progress_content_idx": {
+          "name": "reading_progress_content_idx",
+          "columns": [
+            "contentType",
+            "contentId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "reading_progress_userId_users_id_fk": {
+          "name": "reading_progress_userId_users_id_fk",
+          "tableFrom": "reading_progress",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "surah": {
+      "name": "surah",
+      "columns": {
+        "nomor": {
+          "name": "nomor",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nama": {
+          "name": "nama",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "namaLatin": {
+          "name": "namaLatin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "arti": {
+          "name": "arti",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "jumlahAyat": {
+          "name": "jumlahAyat",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "surah_id_unique": {
+          "name": "surah_id_unique",
+          "columns": [
+            "id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "tafsir": {
+      "name": "tafsir",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ayatId": {
+          "name": "ayatId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "surahId": {
+          "name": "surahId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ayatNomor": {
+          "name": "ayatNomor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "teks": {
+          "name": "teks",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "tafsir_surah_idx": {
+          "name": "tafsir_surah_idx",
+          "columns": [
+            "surahId"
+          ],
+          "isUnique": false
+        },
+        "tafsir_ayat_idx": {
+          "name": "tafsir_ayat_idx",
+          "columns": [
+            "ayatId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "tafsir_ayatId_ayat_id_fk": {
+          "name": "tafsir_ayatId_ayat_id_fk",
+          "tableFrom": "tafsir",
+          "tableTo": "ayat",
+          "columnsFrom": [
+            "ayatId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "tafsir_surahId_surah_id_fk": {
+          "name": "tafsir_surahId_surah_id_fk",
+          "tableFrom": "tafsir",
+          "tableTo": "surah",
+          "columnsFrom": [
+            "surahId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "users": {
+      "name": "users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "columns": [
+            "email"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}
