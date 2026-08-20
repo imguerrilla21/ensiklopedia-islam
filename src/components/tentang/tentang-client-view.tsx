@@ -41,7 +41,7 @@ export default function TentangClientView() {
       const { outcome } = await installPrompt.userChoice
       if (outcome === "accepted") {
         setInstalled(true)
-        showToast("Terima kasih! Hadits.id sedang di-install.")
+        showToast("Terima kasih! almaktaba.id sedang di-install.")
       }
       setInstallPrompt(null)
     } else {
@@ -52,7 +52,14 @@ export default function TentangClientView() {
   const handleCopyLink = () => {
     if (typeof window !== "undefined") {
       navigator.clipboard.writeText(window.location.origin)
-      showToast("Tautan Hadits.id berhasil disalin ke clipboard!")
+      showToast("Tautan almaktaba.id berhasil disalin ke clipboard!")
+    }
+  }
+
+  const handleCopyEmail = () => {
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText("zhoel.hamid@gmail.com")
+      showToast("Email zhoel.hamid@gmail.com berhasil disalin!")
     }
   }
 
@@ -66,7 +73,7 @@ export default function TentangClientView() {
         </div>
       )}
 
-      {/* Main Section: Tentang Kami & Hadits.id */}
+      {/* 1. Main Section: Tentang kami & almaktaba.id */}
       <section className="relative overflow-hidden rounded-3xl border border-emerald-800/50 bg-[#061e1a] p-6 sm:p-10 shadow-2xl">
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-amber-400/5 blur-2xl" />
         
@@ -85,45 +92,47 @@ export default function TentangClientView() {
             </div>
           </div>
 
-          {/* Primary Text from User Request */}
           <div className="space-y-4 text-sm sm:text-base leading-relaxed text-emerald-100/90">
+            {/* Card 1: almaktaba.id Deskripsi */}
             <div className="rounded-2xl border border-emerald-700/40 bg-[#041613] p-5 sm:p-6 shadow-inner space-y-3">
               <h3 className="text-lg font-bold text-amber-300 flex items-center gap-2">
-                <span>Hadits.id</span>
+                <span>almaktaba.id</span>
               </h3>
               <p className="text-emerald-100 font-medium leading-relaxed">
-                Hadits.id sudah ada sejak 2015, 11 tahun hadir sebagai tempat membaca dan mencari hadits — sepenuhnya gratis, tanpa berbayar.
+                almaktaba.id hadir sebagai tempat membaca dan mencari Tafsir Al-Qur'an, Hadis beserta Syarah, dan Kitab Ulama Klasik dengan asisten AI terintegrasi — sepenuhnya gratis, tanpa berbayar.
               </p>
             </div>
 
+            {/* Card 2: Rujukan ahmadsanusi.com */}
             <div className="rounded-2xl border border-emerald-700/40 bg-[#041613] p-5 sm:p-6 shadow-inner space-y-3">
               <h3 className="text-lg font-bold text-amber-300 flex items-center gap-2">
                 <span>Rujukan Terpercaya</span>
               </h3>
               <p className="text-emerald-100 leading-relaxed font-medium">
-                Alhamdulillah, hari ini data hadits di Hadits.id merujuk pada{" "}
+                Alhamdulillah, hari ini data di almaktaba.id merujuk pada{" "}
                 <a
-                  href="https://sunnah.com/"
+                  href="https://ahmadsanusi.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition"
                 >
-                  sunnah.com
+                  ahmadsanusi.com
                 </a>
                 . Insya Allah sumbernya lebih terpercaya dan mudah dilacak kembali.
               </p>
             </div>
 
+            {/* Card 3: Ucapan Terima Kasih */}
             <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-[#041613] to-emerald-950/30 p-5 sm:p-6 shadow-inner">
               <p className="text-amber-100/95 leading-relaxed font-medium">
-                Terima kasih sudah menjadikan Hadits.id teman belajar teman-teman yang di rahmati Allah. Doa dan dukungan teman-teman yang membuat layanan ini tetap berjalan.
+                Terima kasih sudah menjadikan almaktaba.id teman belajar yang di rahmati Allah.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Section: Aplikasi & Install di HP atau Komputer */}
+      {/* 2. Section: Aplikasi & Install di HP atau Komputer */}
       <section className="relative overflow-hidden rounded-3xl border border-amber-500/40 bg-[#061f1a] p-6 sm:p-10 shadow-2xl">
         <div className="relative space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -164,7 +173,7 @@ export default function TentangClientView() {
           </div>
 
           <p className="text-sm sm:text-base leading-relaxed text-emerald-100 font-medium">
-            Hadits.id bisa di-install seperti aplikasi — buka lebih cepat, layar penuh, dan selalu ada di layar utama Android, iPhone, atau komputer.
+            almaktaba.id bisa di-install seperti aplikasi — buka lebih cepat, layar penuh, dan selalu ada di layar utama Android, iPhone, atau komputer.
           </p>
 
           {/* Interactive Platform Tabs */}
@@ -210,7 +219,7 @@ export default function TentangClientView() {
               {activeTab === "android" && (
                 <div className="space-y-2.5 text-emerald-200">
                   <p className="font-bold text-white flex items-center gap-2">
-                    <span className="text-amber-400">1.</span> Buka Hadits.id di browser Google Chrome pada Android Anda.
+                    <span className="text-amber-400">1.</span> Buka <strong className="text-amber-300">almaktaba.id</strong> di browser Google Chrome pada Android Anda.
                   </p>
                   <p className="font-bold text-white flex items-center gap-2">
                     <span className="text-amber-400">2.</span> Ketuk ikon menu titik tiga (<strong className="text-amber-300">⋮</strong>) di pojok kanan atas browser.
@@ -219,7 +228,7 @@ export default function TentangClientView() {
                     <span className="text-amber-400">3.</span> Pilih menu <strong className="text-amber-300">"Install app"</strong> atau <strong className="text-amber-300">"Tambahkan ke Layar Utama"</strong>.
                   </p>
                   <p className="font-bold text-white flex items-center gap-2">
-                    <span className="text-amber-400">4.</span> Konfirmasi <strong className="text-amber-300">"Install"</strong>. Ikon Hadits.id akan langsung muncul di layar utama HP Anda!
+                    <span className="text-amber-400">4.</span> Konfirmasi <strong className="text-amber-300">"Install"</strong>. Ikon aplikasi siap digunakan di layar utama!
                   </p>
                 </div>
               )}
@@ -227,7 +236,7 @@ export default function TentangClientView() {
               {activeTab === "ios" && (
                 <div className="space-y-2.5 text-emerald-200">
                   <p className="font-bold text-white flex items-center gap-2">
-                    <span className="text-amber-400">1.</span> Buka Hadits.id menggunakan browser <strong className="text-amber-300">Safari</strong> di iPhone atau iPad Anda.
+                    <span className="text-amber-400">1.</span> Buka <strong className="text-amber-300">almaktaba.id</strong> menggunakan browser <strong className="text-amber-300">Safari</strong> di iPhone atau iPad Anda.
                   </p>
                   <p className="font-bold text-white flex items-center gap-2">
                     <span className="text-amber-400">2.</span> Ketuk tombol <strong className="text-amber-300">Share (Ikon Kotak Panah ke Atas ⎋)</strong> di bilah navigasi bawah Safari.
@@ -236,7 +245,7 @@ export default function TentangClientView() {
                     <span className="text-amber-400">3.</span> Gulir ke bawah lalu pilih opsi <strong className="text-amber-300">"Add to Home Screen" (+ Tambahkan ke Layar Utama)</strong>.
                   </p>
                   <p className="font-bold text-white flex items-center gap-2">
-                    <span className="text-amber-400">4.</span> Ketuk <strong className="text-amber-300">"Add"</strong> di pojok kanan atas. Aplikasi Hadits.id siap digunakan dalam mode layar penuh!
+                    <span className="text-amber-400">4.</span> Ketuk <strong className="text-amber-300">"Add"</strong> di pojok kanan atas untuk membuka layar penuh.
                   </p>
                 </div>
               )}
@@ -244,16 +253,60 @@ export default function TentangClientView() {
               {activeTab === "pc" && (
                 <div className="space-y-2.5 text-emerald-200">
                   <p className="font-bold text-white flex items-center gap-2">
-                    <span className="text-amber-400">1.</span> Buka Hadits.id di browser Chrome, Edge, atau Brave pada komputer/laptop Anda.
+                    <span className="text-amber-400">1.</span> Buka <strong className="text-amber-300">almaktaba.id</strong> di browser Chrome, Edge, atau Brave pada laptop/komputer Anda.
                   </p>
                   <p className="font-bold text-white flex items-center gap-2">
                     <span className="text-amber-400">2.</span> Klik tombol <strong className="text-amber-300">"Install Aplikasi"</strong> di atas atau klik ikon install di sebelah kanan kolom URL browser.
                   </p>
                   <p className="font-bold text-white flex items-center gap-2">
-                    <span className="text-amber-400">3.</span> Hadits.id akan terbuka sebagai aplikasi desktop mandiri tanpa address bar, cepat, dan responsif!
+                    <span className="text-amber-400">3.</span> Aplikasi akan terbuka sebagai desktop app mandiri tanpa bilah browser.
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Section: Masukan & Kontak */}
+      <section className="relative overflow-hidden rounded-3xl border border-emerald-700/50 bg-[#061e1a] p-6 sm:p-10 shadow-2xl">
+        <div className="relative space-y-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-400/10 border border-amber-400/30 text-amber-400 text-lg font-bold">
+              ✉️
+            </span>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
+                Masukan
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black text-white">
+                Punya masukan?
+              </h2>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-emerald-700/40 bg-[#041613] p-5 sm:p-6 shadow-inner space-y-4">
+            <p className="text-sm sm:text-base leading-relaxed text-emerald-100 font-medium">
+              Saran, koreksi, atau kendala saat memakai Hadits.id. Kami akan baca setiap email yang masuk.
+            </p>
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
+              <a
+                href="mailto:zhoel.hamid@gmail.com"
+                className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#e5a93c] to-amber-500 px-5 py-3 text-xs sm:text-sm font-black text-slate-950 shadow-md transition hover:from-amber-400 hover:to-amber-500 hover:scale-105"
+              >
+                <span>📧</span>
+                <span>Kirim Email: zhoel.hamid@gmail.com</span>
+              </a>
+
+              <button
+                type="button"
+                onClick={handleCopyEmail}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-700 bg-[#06241e] px-4 py-3 text-xs sm:text-sm font-bold text-emerald-300 hover:bg-[#09332a] hover:text-white transition cursor-pointer"
+              >
+                <span>📋</span>
+                <span>Salin Email</span>
+              </button>
             </div>
           </div>
         </div>

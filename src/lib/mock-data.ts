@@ -39,7 +39,7 @@ export const menuUtama: MenuLink[] = [
   {
     href: "/tentang",
     title: "Tentang",
-    description: "Tentang Hadits.id, rujukan sunnah.com, dan panduan instalasi aplikasi.",
+    description: "Tentang almaktaba.id, rujukan ahmadsanusi.com, dan panduan instalasi aplikasi.",
     icon: "info",
   },
 ]

@@ -3,9 +3,9 @@ import Link from "next/link"
 import TentangClientView from "@/components/tentang/tentang-client-view"
 
 export const metadata: Metadata = {
-  title: "Tentang Kami — Hadits.id & Ensiklopedia Islam",
+  title: "Tentang Kami — almaktaba.id & Ensiklopedia Islam",
   description:
-    "Hadits.id hadir sejak 2015 sebagai tempat membaca dan mencari hadits rujukan sunnah.com secara gratis tanpa berbayar. Bisa di-install di HP & Komputer.",
+    "almaktaba.id hadir sebagai tempat membaca dan mencari Tafsir Al-Qur'an, Hadis beserta Syarah, dan Kitab Ulama Klasik dengan asisten AI terintegrasi — sepenuhnya gratis, tanpa berbayar.",
 }
 
 export default function TentangPage() {
@@ -26,11 +26,11 @@ export default function TentangPage() {
 
           {/* Big Title */}
           <h1 className="text-3xl font-black tracking-tight text-white sm:text-5xl font-sans">
-            Hadits<span className="text-[#e5a93c]">.id</span>
+            almaktaba<span className="text-[#e5a93c]">.id</span>
           </h1>
 
           <p className="mx-auto max-w-2xl text-sm sm:text-base leading-relaxed text-emerald-200/90 font-medium">
-            Tempat membaca dan mencari hadits, tafsir, dan kitab ulama klasik — sepenuhnya gratis, tanpa berbayar, dan mudah diakses di seluruh perangkat.
+            Tempat membaca dan mencari Tafsir Al-Qur'an, Hadis beserta Syarah, dan Kitab Ulama Klasik dengan asisten AI terintegrasi — sepenuhnya gratis, tanpa berbayar.
           </p>
         </div>
       </div>
@@ -45,7 +45,7 @@ export default function TentangPage() {
           <span className="text-white">Tentang</span>
         </nav>
 
-        {/* Client Interactive View with PWA Install Guide & Information */}
+        {/* Client Interactive View with Sections: Tentang kami, Aplikasi, Masukan */}
         <TentangClientView />
       </div>
     </main>

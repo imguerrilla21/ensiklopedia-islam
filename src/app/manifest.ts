@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Hadits.id — Ensiklopedia Islam",
-    short_name: "Hadits.id",
-    description: "Tempat membaca dan mencari hadits, tafsir Al-Qur'an, dan kitab ulama klasik gratis tanpa berbayar.",
+    name: "almaktaba.id — Ensiklopedia Islam",
+    short_name: "almaktaba.id",
+    description: "Tempat membaca dan mencari Tafsir Al-Qur'an, Hadis beserta Syarah, dan Kitab Ulama Klasik gratis tanpa berbayar.",
     start_url: "/",
     display: "standalone",
     background_color: "#041310",
