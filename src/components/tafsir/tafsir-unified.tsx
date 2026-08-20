@@ -141,22 +141,46 @@ export default function TafsirUnified({
       audioRef.current.currentTime = 0
     }
 
+    const loadDirectFromPublic = () => {
+      fetch(`https://equran.id/api/v2/surat/${currentSurah.nomor}`)
+        .then((r) => r.json())
+        .then((eqData) => {
+          if (!isMounted) return
+          if (eqData.data && Array.isArray(eqData.data.ayat) && eqData.data.ayat.length > 0) {
+            setAllAyatList(
+              eqData.data.ayat.map((a: any) => ({
+                nomor: a.nomorAyat,
+                arab: a.teksArab,
+                terjemah: a.teksIndonesia,
+                tafsir: "",
+                juz: 1,
+              })),
+            )
+          } else {
+            setAllAyatList([])
+          }
+        })
+        .catch(() => {
+          if (isMounted) setAllAyatList([])
+        })
+        .finally(() => {
+          if (isMounted) setLoadingAyat(false)
+        })
+    }
+
     fetch(`/api/tafsir/surah/${currentSurah.nomor}`)
       .then((res) => res.json())
       .then((data) => {
         if (!isMounted) return
-        if (data.ayat && Array.isArray(data.ayat)) {
+        if (data.ayat && Array.isArray(data.ayat) && data.ayat.length > 0) {
           setAllAyatList(data.ayat)
+          setLoadingAyat(false)
         } else {
-          setAllAyatList([])
+          loadDirectFromPublic()
         }
       })
       .catch(() => {
-        if (!isMounted) return
-        setAllAyatList([])
-      })
-      .finally(() => {
-        if (isMounted) setLoadingAyat(false)
+        if (isMounted) loadDirectFromPublic()
       })
 
     return () => {
