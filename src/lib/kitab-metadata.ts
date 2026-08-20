@@ -256,13 +256,17 @@ export function getKitabMetadata(
   defaultUlama: string = "",
   totalBab: number = 0,
 ): KitabMetaInfo {
-  const reg = KITAB_META_REGISTRY[id] || {}
+  const cleanId = id.toLowerCase().replace(/[^a-z0-9]/g, "")
+  const foundKey = Object.keys(KITAB_META_REGISTRY).find(
+    (k) => k === id || k.toLowerCase().replace(/[^a-z0-9]/g, "") === cleanId,
+  )
+  const reg = (foundKey ? KITAB_META_REGISTRY[foundKey] : null) || {}
 
   return {
     arabicTitle: reg.arabicTitle || defaultJudul,
     fullAuthor: reg.fullAuthor || defaultUlama,
     hadisCountLabel: reg.hadisCountLabel || `${totalBab} Hadis / Pasal`,
-    babCountLabel: reg.babCountLabel || `${totalBab} Bab Klasik`,
+    babCountLabel: totalBab > 0 ? `${totalBab} Bab Lengkap` : reg.babCountLabel || "Bab Lengkap",
     defaultDerajat: reg.defaultDerajat || "Shahih",
     tag: reg.tag || "Pustaka Klasik",
   }
