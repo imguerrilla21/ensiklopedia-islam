@@ -6,6 +6,7 @@ import {
   getKitabMetadata,
   parseBabContent,
   type ParsedBabItem,
+  type ParsedHadisCard,
 } from "@/lib/kitab-metadata"
 import type { KitabItem } from "@/lib/kitab-data"
 import SimpanRiwayatButton from "@/components/simpan-riwayat-button"
@@ -49,16 +50,34 @@ export default function KitabReader({
   // Filter Bab options based on search query
   const filteredBabOptions = useMemo(() => {
     if (!babSearchQuery.trim()) return parsedList
-    const q = babSearchQuery.toLowerCase()
+    const q = babSearchQuery.toLowerCase().trim()
     return parsedList.filter(
       (b) =>
         b.cleanJudul.toLowerCase().includes(q) ||
         b.subBabArab.includes(q) ||
         b.fullTeks.toLowerCase().includes(q) ||
         b.teksIndo.toLowerCase().includes(q) ||
+        b.teksArab.includes(q) ||
+        b.hadisList.some(
+          (h: ParsedHadisCard) =>
+            h.subJudul.toLowerCase().includes(q) ||
+            h.teksIndo.toLowerCase().includes(q) ||
+            h.syarah.toLowerCase().includes(q) ||
+            h.teksArab.includes(q),
+        ) ||
+        String(b.nomor) === q ||
         String(b.nomor).includes(q),
     )
   }, [parsedList, babSearchQuery])
+
+  // Automatically switch selected Bab to first match when search query changes
+  useEffect(() => {
+    if (babSearchQuery.trim() && filteredBabOptions.length > 0) {
+      if (!filteredBabOptions.some((b) => b.nomor === selectedBab)) {
+        setSelectedBab(filteredBabOptions[0].nomor)
+      }
+    }
+  }, [filteredBabOptions, babSearchQuery, selectedBab])
 
   // Filter only currently selected Bab
   const displayedList = useMemo(() => {
